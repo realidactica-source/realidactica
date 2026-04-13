@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Maestros - Realidáctica</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/portal_m.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="logo">Realidáctica</div>
+    <div class="menu">
+        <a href="#" class="active"><i class="fa-solid fa-border-all"></i> Dashboard</a>
+        <a href="#"><i class="fa-solid fa-upload"></i> Subir Tareas</a>
+        <a href="#"><i class="fa-solid fa-graduation-cap"></i> Carreras y Grupos</a>
+        <a href="#"><i class="fa-solid fa-folder"></i> Archivos</a>
+        <a href="#"><i class="fa-solid fa-chalkboard-user"></i> Asesorías</a>
+    </div>
+
+    <div class="ai-chat-container">
+        <div class="ai-widget">
+            <div class="ai-header">
+                <div class="ai-avatar">
+                    <i class="fa-solid fa-robot"></i>
+                    <span class="online-status"></span>
+                </div>
+                <p class="ai-greeting">Asistente IA</p>
+            </div>
+            <div class="ai-history" id="chat-history">
+                </div>
+            <div class="ai-input-group">
+                <input type="text" id="chat-input" placeholder="Pregunta algo...">
+                <button class="ai-send-btn" id="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main">
+    <div class="title">Panel de Control Docente</div>
+
+    <div class="grid">
+        <div class="card" style="grid-column: span 2;">
+            <h3>Área de Trabajo Rápido: Asignación de Material</h3>
+            <div class="workspace-container">
+                
+                <div class="upload-zone" id="drop-zone">
+                    <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: var(--neon-red); margin-bottom: 12px;"></i>
+                    <p id="file-name-display">Arrastra tu archivo PDF aquí o haz clic para explorar</p>
+                    <input type="file" id="quick-pdf-upload" accept="application/pdf" hidden>
+                    <button type="button" class="btn-outline" onclick="document.getElementById('quick-pdf-upload').click()">
+                        <i class="fa-solid fa-folder-open"></i> Explorar Archivos
+                    </button>
+                </div>
+
+                <div class="assignment-details">
+                    <label class="file-label">Seleccionar Programa Académico:</label>
+                    <select id="quick-carrera">
+                        <option value="" disabled selected>Seleccionar Carrera...</option>
+                        <option value="ITI">Ingeniería en Tecnologías de la Información</option>
+                        <option value="MEC">Mecatrónica</option>
+                        <option value="MI">Mantenimiento Industrial</option>
+                        <option value="DS">Desarrollo de Software</option>
+                    </select>
+                    
+                    <label class="file-label">Identificador del Grupo:</label>
+                    <input type="text" id="quick-grupo" placeholder="Ej: GDS0542 o 4°A">
+                    
+                    <button class="btn-primary" id="btn-quick-assign">
+                        <i class="fa-solid fa-rocket"></i> Asignar Material
+                    </button>
+
+                    <div id="upload-progress-container" style="display: none; margin-top: 15px;">
+                        <div class="progress-bar-bg" style="background: rgba(255,255,255,0.1); border-radius: 4px; height: 8px; width: 100%; overflow: hidden;">
+                            <div id="upload-progress-fill" style="background: var(--neon-blue); height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+                        </div>
+                        <small id="upload-status-text" style="color: var(--neon-blue); font-size: 0.75rem; margin-top: 5px; display: block; text-align: right;">0%</small>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="card" style="grid-column: span 2;">
+            <h3>Publicar Tarea Detallada</h3>
+            <form action="#" method="post" enctype="multipart/form-data">
+                <input type="text" placeholder="Título de la actividad" required>
+                <textarea placeholder="Descripción y criterios de evaluación..." required rows="4"></textarea>
+                
+                <div style="display: flex; gap: 20px;">
+                    <div style="flex: 1;">
+                        <label class="file-label">Material de apoyo (Adicional):</label>
+                        <input type="file" class="file-input" name="archivo_tarea">
+                    </div>
+                    <div style="flex: 1;">
+                        <label class="file-label">Fecha de entrega:</label>
+                        <input type="date" required>
+                    </div>
+                </div>
+                
+                <button type="submit" style="margin-top: 15px;">Subir Tarea a la Plataforma</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/tarea.js"></script>
+</body>
+</html>

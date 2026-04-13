@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión Académica - Realidáctica</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/grupos.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="{{ url_for('maestro_portal') }}" class="back-link"><i class="fa-solid fa-chevron-left"></i> Volver al Portal</a>
+            <h1>Configuración de Oferta Académica</h1>
+        </header>
+
+        <div class="forms-grid">
+            <div class="card">
+                <h3><i class="fa-solid fa-plus-circle"></i> Nueva Carrera</h3>
+                <form action="{{ url_for('crear_carrera') }}" method="POST">
+                    <input type="text" name="nombre_carrera" placeholder="Nombre de la carrera..." required>
+                    <button type="submit" class="btn-main">Guardar Carrera</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3><i class="fa-solid fa-users-gear"></i> Crear Grupo</h3>
+                <form action="{{ url_for('crear_grupo') }}" method="POST">
+                    <select name="carrera_id" required>
+                        <option value="" disabled selected>Selecciona Carrera</option>
+                        {% for carrera in carreras %}
+                        <option value="{{ carrera.id }}">{{ carrera.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="text" name="nombre_grupo" placeholder="Ej: GDS0542" required>
+                    <button type="submit" class="btn-sec">Registrar Grupo</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="data-table">
+            <h3>Grupos y Carreras Existentes</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Grupo</th>
+                        <th>Carrera</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for g in grupos_lista %}
+                    <tr>
+                        <td>{{ g.grupo }}</td>
+                        <td>{{ g.carrera }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

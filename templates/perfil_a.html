@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal del Alumno - Realidáctica</title>
+    <link rel="stylesheet" href="/static/perfil.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="logo">Realidáctica</div>
+    <div class="menu">
+        <a href="#">Dashboard</a>
+        <a href="#">Ver Tareas</a>
+        <a href="#">Subir Tarea</a>
+        <a href="#">Calificaciones</a>
+        <a href="#">Material de Clases</a>
+        <a href="#">Mi Progreso</a>
+    </div>
+</div>
+
+<div class="main">
+    <h1 class="title">Bienvenido, {{ session['user_name'] if 'user_name' in session else 'Alumno' }}</h1>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Mi Estilo de Aprendizaje</h3>
+            {% if info %}
+                <p>Tu estilo dominante es: <strong style="color: #0fd3c7;">{{ info.resultado_final }}</strong></p>
+                <div style="margin-top:10px; font-size: 0.9rem;">
+                    <p>Visual: {{ info.visual }}%</p>
+                    <p>Auditivo: {{ info.auditivo }}%</p>
+                    <p>Kinestésico: {{ info.kinestesico }}%</p>
+                </div>
+            {% else %}
+                <p>Aún no has realizado el test.</p>
+                <button onclick="window.location.href='/'" style="margin-top:10px;">Realizar Test </button>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <h3>Tareas disponibles</h3>
+            <ul class="lista">
+                <li>Tarea 1 - Liderazgo</li>
+                <li>Tarea 2 - Programación</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>Mis calificaciones</h3>
+            <table>
+                <tr><th>Materia</th><th>Calificación</th></tr>
+                <tr><td>Programación</td><td>9.2</td></tr>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

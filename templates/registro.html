@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Realidáctica</title>
+    <link rel="stylesheet" href="/static/registro.css">
+    <style>
+        .error-banner {
+            background: rgba(255, 80, 80, 0.15);
+            border: 1px solid rgba(255, 80, 80, 0.5);
+            color: #ff6b6b;
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-bottom: 14px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .success-banner {
+            background: rgba(15, 211, 199, 0.15);
+            border: 1px solid rgba(15, 211, 199, 0.5);
+            color: #0fd3c7;
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-bottom: 14px;
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-wrapper">
+        <h1 class="neon-title">Realidáctica</h1>
+
+        <div class="logo-container">
+            <img src="/static/js/KADY3D.png" alt="Mascota Realidáctica" class="robot-logo">
+            <div class="logo-glow"></div>
+        </div>
+
+        <div class="form-container">
+            <h2>Registro de usuario</h2>
+
+            <!-- Mensajes flash de Flask -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="{{ 'error-banner' if category == 'danger' else 'success-banner' }}">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form action="/registro" method="POST">
+                <input type="text"     name="nombre"    placeholder="Nombre"               required>
+                <input type="text"     name="apellido1" placeholder="Apellido 1"            required>
+                <input type="text"     name="apellido2" placeholder="Apellido 2"            required>
+                <input type="text"     name="matricula" placeholder="Matrícula"             required>
+                <input type="email"    name="correo"    placeholder="Correo electrónico"    required>
+                <input type="tel"      name="celular"   placeholder="Celular"               required>
+                <input type="password" name="password"  placeholder="Contraseña"            required minlength="6">
+                <input type="password" name="password2" placeholder="Confirmar contraseña"  required minlength="6">
+
+                <div class="radio-group">
+                    <span class="role-label">Eres:</span>
+                    <label class="custom-radio">
+                        <input type="radio" name="rol" value="alumno" checked>
+                        <span class="radio-mark"></span>
+                        Alumno
+                    </label>
+                    <label class="custom-radio">
+                        <input type="radio" name="rol" value="maestro">
+                        <span class="radio-mark"></span>
+                        Maestro
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-submit">Registrar</button>
+            </form>
+
+            <a href="/login" style="display:block; text-align:center; margin-top:14px; color:#0fd3c7; font-size:13px; text-decoration:none;">
+                ¿Ya tienes cuenta? Inicia sesión
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

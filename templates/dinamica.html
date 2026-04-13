@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realidáctica - {{ clase.titulo }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='clase.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { 
+            --bg-dark: #010409; 
+            --neon-blue: #00d2ff; 
+            --transition: 0.3s; 
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #c9d1d9;
+            font-family: 'Rajdhani', sans-serif;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* BARRA LATERAL */
+        .sidebar { width: 280px; background: #0d1117; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid #30363d; }
+        .brand { font-size: 1.8rem; color: var(--neon-blue); margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; }
+        .nav-links { display: flex; flex-direction: column; gap: 10px; }
+        .nav-item { background: none; border: none; color: #8b949e; padding: 12px; text-align: left; font-size: 1.1rem; cursor: pointer; border-radius: 6px; transition: var(--transition); width: 100%; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .nav-item.active, .nav-item:hover { background: #161b22; color: var(--neon-blue); }
+
+        /* WIDGET IA */
+        .ai-widget { background: #161b22; padding: 15px; border-radius: 12px; border: 1px solid #30363d; margin-top: 20px; }
+        .ai-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .ai-avatar { width: 35px; height: 35px; background: var(--neon-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; position: relative; }
+        .online-status { width: 10px; height: 10px; background: #238636; border-radius: 50%; position: absolute; bottom: 0; right: 0; border: 2px solid #161b22; }
+        .ai-input-group { display: flex; gap: 8px; }
+        .ai-input-group input { flex: 1; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: #fff; padding: 8px; font-family: inherit; }
+        .ai-send-btn { background: var(--neon-blue); border: none; border-radius: 6px; padding: 8px 12px; cursor: pointer; transition: 0.3s; }
+        .ai-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* CONTENIDO PRINCIPAL */
+        .content { flex: 1; padding: 40px; overflow-y: auto; }
+        .section-title { font-size: 2rem; margin-bottom: 30px; border-left: 5px solid var(--neon-blue); padding-left: 15px; }
+        .grid-main { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        .card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 20px; }
+        .video-main { height: 400px; position: relative; background: #000; overflow: hidden; padding: 0; border: 1px solid #30363d; border-radius: 12px; }
+        .live-tag { position: absolute; top: 20px; left: 20px; background: #da3633; color: #fff; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; z-index: 5; }
+
+        /* LISTA DE CLASES */
+        .clases-list { display: flex; flex-direction: column; gap: 10px; }
+        .clase-item { 
+            display: flex; 
+            align-items: center; 
+            padding: 15px; 
+            background: rgba(255, 255, 255, 0.03); 
+            border-radius: 8px; 
+            border: 1px solid transparent; 
+            transition: var(--transition); 
+            text-decoration: none; 
+            color: inherit;
+        }
+        .clase-item:hover { 
+            background: rgba(0, 210, 255, 0.1); 
+            border-color: var(--neon-blue); 
+            transform: translateX(5px);
+        }
+        .clase-item.active { background: rgba(0, 210, 255, 0.05); border-left: 4px solid var(--neon-blue); border-color: rgba(0, 210, 255, 0.3); }
+        .clase-num { font-size: 1.2rem; font-weight: 700; color: var(--neon-blue); margin-right: 15px; width: 30px; }
+        .clase-details { flex: 1; }
+        .clase-name { margin: 0; font-weight: 600; font-size: 1.1rem; }
+        .menu-label { color: #8b949e; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 15px; }
+
+        /* FOOTER DE USUARIO */
+        .user-footer { margin-top: 20px; padding-top: 20px; border-top: 1px solid #30363d; }
+        .avatar-circle { width: 32px; height: 32px; background: var(--neon-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; }
+        .btn-logout { width: 100%; background: #21262d; border: 1px solid #30363d; color: #f85149; padding: 8px; border-radius: 6px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-logout:hover { background: #f85149; color: #fff; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div>
+            <h1 class="brand">Realidáctica</h1>
+            <nav class="nav-links">
+                <a href="{{ url_for('clase', id=clase.id) if clase else '#' }}" class="nav-item active">
+                    <i class="fa-solid fa-border-all"></i> Mis clases
+                </a>
+                <a href="{{ url_for('prin') }}" class="nav-item">
+                    <i class="fa-solid fa-chalkboard-user"></i> Asesoría Personal
+                </a>
+                <a href="{{ url_for('portal_alumno') }}" class="nav-item">
+                    <i class="fa-solid fa-user"></i> Perfil
+                </a>
+            </nav>
+        </div>
+
+        <div>
+            <div class="ai-widget">
+                <div class="ai-header">
+                    <div class="ai-avatar"><i class="fa-solid fa-robot"></i><span class="online-status"></span></div>
+                    <p class="ai-greeting" id="ai-response">{{ session.get('user_name', 'Estudiante') }}, ¿en qué puedo ayudarte hoy?</p>
+                </div>
+                <div class="ai-input-group">
+                    <input type="text" id="ai-input" placeholder="Consultar a Kady...">
+                    <button class="ai-send-btn" id="ai-send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+
+            <div class="user-footer">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="avatar-circle">{{ session.get('user_name', 'U')[0] | upper }}</div>
+                    <span style="font-weight: 600;">{{ session.get('user_name', 'Usuario') }}</span>
+                </div>
+                <button class="btn-logout" onclick="window.location.href='{{ url_for('logout') }}'">Cerrar Sesión</button>
+            </div>
+        </div>
+    </aside>
+
+    <main class="content">
+        <h2 class="section-title">Terminal de Aprendizaje</h2>
+        <div class="grid-main">
+            <div>
+                <div class="card video-main">
+                    <span class="live-tag">CLASE GRABADA</span>
+                    <iframe width="100%" height="100%" src="{{ clase.url_video }}" allowfullscreen style="border: none;"></iframe>
+                </div>
+                <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="font-size: 1.5rem; color: #fff;">{{ clase.titulo }}</h3>
+                        <p style="color: #8b949e;">{{ clase.modulo }}</p>
+                    </div>
+                    <a href="{{ url_for('dinamica') }}" style="background: var(--neon-blue); color: #000; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; transition: 0.3s;">
+                        <i class="fa-solid fa-gamepad"></i> Iniciar Evaluación
+                    </a>
+                </div>
+            </div>
+
+            <div class="clases-list">
+                <p class="menu-label">Índice de Clases</p>
+                {% for item in lista %}
+                <a href="{{ url_for('clase', id=item.id) }}" class="clase-item {{ 'active' if item.id == clase.id else '' }}">
+                    <span class="clase-num">{{ "%02d" % loop.index }}</span>
+                    <div class="clase-details">
+                        <p class="clase-name">{{ item.titulo }}</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const aiInput = document.getElementById('ai-input');
+        const aiBtn = document.getElementById('ai-send-btn');
+        const aiResponse = document.getElementById('ai-response');
+
+        async function preguntarIA() {
+            const consulta = aiInput.value.trim();
+            if (!consulta) return;
+
+            // Estado de carga
+            aiResponse.innerText = "Kady está procesando...";
+            aiInput.value = "";
+            aiBtn.disabled = true;
+
+            try {
+                const formData = new FormData();
+                formData.append('consulta', consulta);
+
+                const response = await fetch('/consulta', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    aiResponse.innerText = data.mensaje;
+                } else {
+                    aiResponse.innerText = "Error: " + (data.mensaje || "Error desconocido");
+                }
+            } catch (error) {
+                aiResponse.innerText = "Hubo un error al conectar con el servidor.";
+                console.error(error);
+            } finally {
+                aiBtn.disabled = false;
+            }
+        }
+
+        aiBtn.addEventListener('click', preguntarIA);
+        aiInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') preguntarIA();
+        });
+    </script>
+</body>
+</html>

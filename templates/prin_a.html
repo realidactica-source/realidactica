@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realidáctica - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/prin.css">
+</head>
+<body data-materia="general">
+
+    <aside class="sidebar">
+        <div class="top-nav">
+            <h1 class="brand">Realidáctica</h1>
+            <p class="menu-label">MENU</p>
+            <nav class="nav-links">
+                <button class="nav-item"><i class="fa-solid fa-border-all"></i> Mis clases</button>
+                <button class="nav-item active"><i class="fa-solid fa-chalkboard-user"></i> Asesoría Personal</button>
+                <button class="nav-item"><i class="fa-solid fa-user"></i> Perfil</button>
+            </nav>
+        </div>
+
+        <div class="ai-chat-container">
+            <div class="ai-widget">
+                <div class="ai-header">
+                    <div class="ai-avatar">
+                        <i class="fa-solid fa-robot"></i>
+                        <span class="online-status"></span>
+                    </div>
+                    <p class="ai-greeting">{{ session['user_name'] }}, ¿en qué puedo ayudarte hoy?</p>
+                </div>
+
+                <div class="ai-history" id="chat-history"></div>
+
+                <div class="ai-input-group">
+                    <input type="text" id="chat-input" placeholder="Escribe un mensaje...">
+                    <button class="ai-send-btn" id="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+
+            <div class="user-footer">
+                <div class="user-info">
+                    <div class="avatar"></div>
+                    <span>{{ session['user_name'] }}</span>
+                </div>
+                <a href="{{ url_for('logout') }}" style="text-decoration:none;">
+                    <button class="btn-logout" style="cursor:pointer;">Cerrar Sesión</button>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <main class="content">
+        <h2 class="section-title">Visto recientemente</h2>
+        <div class="grid-main">
+            
+            <a href="/clase_liderazgo" target="_blank" class="card large-card promo" style="text-decoration: none;">
+                <span class="card-label">Liderazgo y Emprendimiento</span>
+            </a>
+            
+            <div class="card large-card task-list">
+                <h3 class="task-header">
+                    <i class="fa-solid fa-list-check"></i> Tareas Pendientes
+                </h3>
+                <ul class="task-items">
+                    <li class="task-item" style="border-left-color: #ff6b6b;">
+                        <strong>Cálculo:</strong> Ejercicios de funciones de varias variables.
+                    </li>
+                    <li class="task-item" style="border-left-color: #00bcd4;"> <strong>Frameworks:</strong> Integrar API en el backend con Flask.
+                    </li>
+                    <li class="task-item" style="border-left-color: #feca57;">
+                        <strong>Liderazgo:</strong> Avance del modelo de negocio.
+                    </li>
+                </ul>
+            </div>
+
+            <a href="/clase_calculo" target="_blank" class="card small-card promo">
+                <span class="card-label">Cálculo</span>
+            </a>
+            
+            <a href="/clase_frameworks" target="_blank" class="card small-card promo">
+                <span class="card-label">Frameworks</span>
+            </a>
+
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>

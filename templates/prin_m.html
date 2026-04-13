@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realidáctica - Terminal Docente</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/prin_m.css">
+</head>
+<body>
+
+    <canvas id="code-rain"></canvas>
+
+    <aside class="sidebar">
+        <div>
+            <h1 class="brand">Realidáctica</h1>
+            <p class="menu-label">Portal Docente</p>
+            <nav class="nav-links">
+                <button class="nav-item"><i class="fa-solid fa-users"></i> Mis Grupos</button>
+                <button class="nav-item active"><i class="fa-solid fa-user-graduate"></i> Expedientes</button>
+                <button class="nav-item"><i class="fa-solid fa-chart-line"></i> Analíticas</button>
+                <button class="nav-item" onclick="window.location.href='/portal-maestro'">
+                <button class="nav-item" onclick="window.location.href='/portal-maestro'">
+                    <i class="fa-solid fa-chalkboard-teacher"></i> Portal de Tareas
+                </button>
+            </nav>
+        </div>
+
+        <div>
+            <div class="ai-widget">
+                <div class="ai-header" style="display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:0.85rem">
+                    <i class="fa-solid fa-robot" style="color:var(--neon-green)"></i>
+                    <p>Vlad: Sistema listo.</p>
+                </div>
+                <div style="background:#0d1117; border:1px solid rgba(0,210,255,0.2); border-radius:4px; padding:5px;">
+                    <input type="text" placeholder="Consultar IA..." style="background:transparent; border:none; color:white; font-size:0.8rem; width:100%; outline:none;">
+                </div>
+            </div>
+            <button class="btn-logout">Cerrar Sesión</button>
+        </div>
+    </aside>
+
+    <main class="content">
+        <div class="header-top">
+            <h2 style="text-transform: uppercase; letter-spacing: 2px;">Panel de Control</h2>
+            <div style="display:flex; align-items:center; gap:15px">
+                <span>Bienvenido, <strong>Vladimir</strong></span>
+                <div style="width:35px; height:35px; background:var(--neon-purple); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700;">V</div>
+            </div>
+        </div>
+
+        <div class="resumen-grid">
+            <div class="stat-card"><p>Grupos</p><h2>4</h2></div>
+            <div class="stat-card"><p>Alumnos</p><h2>130</h2></div>
+            <div class="stat-card"><p>Pendientes</p><h2 style="color:var(--neon-red)">18</h2></div>
+            <div class="stat-card highlight"><p>Promedio</p><h2>8.3</h2></div>
+        </div>
+
+        <div class="content-layout">
+            <div class="card-expediente">
+                <div class="student-header">
+                    <div><h3>Expediente: Alex Mercer</h3><p class="task-meta">ID: RD-4059</p></div>
+                    <div style="text-align: right"><h2 style="color:var(--neon-green)">8.8</h2><p style="font-size:0.7rem">SCORE</p></div>
+                </div>
+                <p class="menu-label">Diagnóstico</p>
+                <div class="barra"><div class="progreso visual"></div></div>
+                <div class="barra"><div class="progreso auditivo"></div></div>
+                <div class="barra"><div class="progreso curso"></div></div>
+            </div>
+
+            <div class="tasks-panel">
+                <h3 class="menu-label">Alertas</h3>
+                <div class="task-item"><span class="task-title">Variables C++</span><span class="task-meta">21 revisiones</span></div>
+                <div class="task-item"><span class="task-title">Config. Router</span><span class="task-meta">5 revisiones</span></div>
+            </div>
+        </div>
+
+        <h3 class="menu-label" style="margin-top:20px; font-size:1rem; border-bottom:1px solid var(--border-glow); padding-bottom:10px;">
+            <i class="fa-solid fa-layer-group"></i> Mis Grupos de Clase
+        </h3>
+
+        <div class="clases-grid">
+            <div class="clase-card">
+                <i class="fa-solid fa-network-wired"></i>
+                <h3>Redes e Infraestructura</h3>
+                <p>Análisis de topologías y configuración de nodos críticos.</p>
+                <div style="display:flex; justify-content:space-between; align-items:center">
+                    <span style="font-size:0.7rem; color:var(--neon-green)">ACTIVO</span>
+                    <button class="btn-entrar">Gestionar</button>
+                </div>
+            </div>
+
+            <div class="clase-card" style="border-left-color: var(--neon-purple);">
+                <i class="fa-solid fa-brain" style="color: var(--neon-purple);"></i>
+                <h3>Liderazgo y Gestión</h3>
+                <p>Desarrollo de habilidades directivas y resolución de conflictos.</p>
+                <div style="display:flex; justify-content:space-between; align-items:center">
+                    <span style="font-size:0.7rem; color:var(--neon-purple)">SEMINARIO</span>
+                    <button class="btn-entrar" style="border-color:var(--neon-purple); color:var(--neon-purple)">Gestionar</button>
+                </div>
+            </div>
+
+            <div class="clase-card" style="border-left-color: var(--neon-green);">
+                <i class="fa-solid fa-code" style="color: var(--neon-green);"></i>
+                <h3>Programación C++</h3>
+                <p>Estructuras de datos, punteros y optimización de memoria.</p>
+                <div style="display:flex; justify-content:space-between; align-items:center">
+                    <span style="font-size:0.7rem; color:var(--neon-green)">LABORATORIO</span>
+                    <button class="btn-entrar" style="border-color:var(--neon-green); color:var(--neon-green)">Gestionar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('code-rain');
+        const ctx = canvas.getContext('2d');
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+
+        const characters = "0123456789ABCDEF".split("");
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawRain() {
+            ctx.fillStyle = "rgba(1, 4, 9, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#00d2ff";
+            ctx.font = fontSize + "px 'Rajdhani'";
+            for (let i = 0; i < drops.length; i++) {
+                const text = characters[Math.floor(Math.random() * characters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawRain, 50);
+    </script>
+</body>
+</html>

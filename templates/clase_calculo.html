@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realidáctica - Cálculo Integral</title>
+
+    <link rel="stylesheet" href="/static/clase.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='clase_test.css') }}">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div>
+            <h1 class="brand">Realidáctica</h1>
+            <nav class="nav-links">
+                <a href="{{ url_for('clase_calculo') }}" class="nav-item active">
+                    <i class="fa-solid fa-border-all"></i> Mis clases
+                </a>
+                <a href="{{ url_for('prin') }}" class="nav-item">
+                    <i class="fa-solid fa-chalkboard-user"></i> Asesoría Personal
+                </a>
+                <a href="{{ url_for('portal_alumno') }}" class="nav-item">
+                    <i class="fa-solid fa-user"></i> Perfil
+                </a>
+            </nav>
+
+            <!-- Widget del chat justo debajo del nav -->
+            <div class="ai-widget" style="margin-top:18px;">
+                <div class="ai-header">
+                    <div class="ai-avatar">
+                        <i class="fa-solid fa-robot"></i>
+                        <span class="online-status"></span>
+                    </div>
+                    <p class="ai-response-box" id="ai-response">
+                        {{ session.get('user_name', 'Estudiante') }}, ¿en qué puedo ayudarte hoy?
+                    </p>
+                </div>
+
+                <button class="btn-test" onclick="abrirTest()">
+                    <i class="fa-solid fa-pen-to-square"></i> Generar test de la clase
+                </button>
+
+                <div class="ai-input-group">
+                    <input type="text" id="ai-input" placeholder="Consultar a Kady...">
+                    <button class="ai-send-btn" id="ai-send-btn">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="user-footer">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="avatar-circle">{{ session.get('user_name', 'U')[0] | upper }}</div>
+                    <span style="font-weight:600;">{{ session.get('user_name', 'Usuario') }}</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="content">
+        <h2 class="section-title">Cálculo Integral</h2>
+        <div class="grid-main">
+            <div>
+                <div class="card video-main">
+                    <span class="live-tag">CLASE GRABADA</span>
+                    <iframe width="100%" height="100%"
+                        src="/static/clases/calculo/integrales.mp4"
+                        allowfullscreen style="border:none;"></iframe>
+                </div>
+
+                <div style="margin-top:20px;">
+                    <h3 style="font-size:1.5rem;color:#fff;">{{ clase.titulo }}</h3>
+                    <p style="color:#8b949e;">{{ clase.modulo }}</p>
+                </div>
+
+                <div class="card pdf-viewer" style="margin-top:20px;background:#161b22;border-radius:12px;padding:15px;border:1px solid #30363d;">
+                    <h4 style="color:#fff;margin-bottom:15px;font-family:'Rajdhani',sans-serif;">
+                        <i class="fa-solid fa-file-pdf" style="color:#ff5252;"></i> Material de Lectura
+                    </h4>
+                    <iframe src="/static/clases/calculo/integrales.pdf"
+                        width="100%" height="500px" style="border:none;border-radius:8px;"></iframe>
+                </div>
+            </div>
+
+            <div class="clases-list">
+                <p class="menu-label">Índice de Clases</p>
+                {% for item in lista %}
+                <a href="#" class="clase-item">
+                    <span class="clase-num">{{ "%02d" % loop.index }}</span>
+                    <div class="clase-details">
+                        <p class="clase-name">{{ item.titulo }}</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <!-- ══════════════════════════════════════════
+         MODAL DEL TEST INTERACTIVO
+    ══════════════════════════════════════════ -->
+    <div class="test-overlay" id="test-overlay">
+        <div class="test-modal">
+
+            <div class="test-header">
+                <h3 id="test-titulo"><i class="fa-solid fa-pen-to-square" style="color:#e3b341;margin-right:8px;"></i>Test de la clase</h3>
+                <button class="test-close-btn" onclick="cerrarTest()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="test-progress-bar">
+                <div class="test-progress-fill" id="test-progress"></div>
+            </div>
+
+            <div class="test-body" id="test-body">
+                <!-- Contenido dinámico -->
+            </div>
+
+            <div class="test-nav" id="test-nav" style="display:none;">
+                <span class="test-nav-info" id="test-nav-info"></span>
+                <div style="display:flex;gap:8px;">
+                    <button class="test-nav-btn" id="btn-anterior" onclick="irPregunta(-1)" disabled>
+                        <i class="fa-solid fa-arrow-left"></i> Anterior
+                    </button>
+                    <button class="test-nav-btn primary" id="btn-siguiente" onclick="irPregunta(1)" disabled>
+                        Siguiente <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        /* ═══════════════════════════════════════
+           CHAT GENERAL
+        ═══════════════════════════════════════ */
+        const aiInput = document.getElementById('ai-input');
+        const aiBtn   = document.getElementById('ai-send-btn');
+        const aiResp  = document.getElementById('ai-response');
+
+        async function enviarDesdeInput() {
+            const texto = aiInput.value.trim();
+            if (!texto) return;
+            aiInput.value = '';
+            // Detectar si el usuario escribe "test" para abrir el modal
+            if (/test|quiz|examen|p[oó]nme\s+a\s+prueba/i.test(texto)) {
+                abrirTest(); return;
+            }
+            await enviarConsulta(texto);
+        }
+
+        async function enviarConsulta(consulta) {
+            aiResp.textContent = "Kady está analizando el material...";
+            aiResp.classList.add('loading');
+            aiBtn.disabled = true;
+            try {
+                const fd = new FormData();
+                fd.append('consulta', consulta);
+                fd.append('materia', 'Cálculo Integral');
+                const res  = await fetch('/consulta_clase', { method:'POST', body:fd });
+                const data = await res.json();
+                aiResp.textContent = res.ok ? data.mensaje : "Error: " + (data.mensaje || "Error desconocido");
+            } catch(e) {
+                aiResp.textContent = "Error al conectar con el servidor.";
+            } finally {
+                aiResp.classList.remove('loading');
+                aiBtn.disabled = false;
+            }
+        }
+
+        aiBtn.addEventListener('click', enviarDesdeInput);
+        aiInput.addEventListener('keypress', e => { if(e.key==='Enter') enviarDesdeInput(); });
+
+        /* ═══════════════════════════════════════
+           TEST INTERACTIVO
+        ═══════════════════════════════════════ */
+        let testData       = null;   // JSON completo del test
+        let preguntaActual = 0;      // índice 0-based
+        let respuestas     = {};     // { 0: 'A', 1: 'C', ... }
+        let respondidas    = {};     // { 0: true, ... }
+
+        async function abrirTest() {
+            // Abrir overlay y mostrar spinner
+            document.getElementById('test-overlay').classList.add('active');
+            document.getElementById('test-nav').style.display = 'none';
+            document.getElementById('test-body').innerHTML = `
+                <div class="test-loading">
+                    <i class="fa-solid fa-circle-notch"></i>
+                    Kady está generando tu test a partir del PDF y el video...
+                </div>`;
+
+            try {
+                const res  = await fetch('/generar_test', { method:'POST' });
+                const data = await res.json();
+
+                if (data.error) throw new Error(data.error);
+
+                testData       = data;
+                preguntaActual = 0;
+                respuestas     = {};
+                respondidas    = {};
+
+                document.getElementById('test-titulo').innerHTML =
+                    `<i class="fa-solid fa-pen-to-square" style="color:#e3b341;margin-right:8px;"></i>${data.titulo}`;
+                document.getElementById('test-nav').style.display = 'flex';
+                renderPregunta();
+
+            } catch(e) {
+                document.getElementById('test-body').innerHTML = `
+                    <div class="test-loading" style="color:#f85149;">
+                        <i class="fa-solid fa-triangle-exclamation" style="color:#f85149;animation:none;"></i>
+                        ${e.message || "Error al generar el test. Intenta de nuevo."}
+                    </div>`;
+            }
+        }
+
+        function cerrarTest() {
+            document.getElementById('test-overlay').classList.remove('active');
+        }
+        // Cerrar con clic fuera del modal
+        document.getElementById('test-overlay').addEventListener('click', function(e) {
+            if (e.target === this) cerrarTest();
+        });
+
+        function renderPregunta() {
+            const total = testData.preguntas.length;
+            const q     = testData.preguntas[preguntaActual];
+            const idx   = preguntaActual;
+            const yaRespondio = respondidas[idx] || false;
+
+            // Barra de progreso (avanza cuando se responde)
+            const respondidas_count = Object.keys(respondidas).length;
+            document.getElementById('test-progress').style.width =
+                `${Math.round((respondidas_count / total) * 100)}%`;
+
+            // Info navegación
+            document.getElementById('test-nav-info').textContent =
+                `Pregunta ${idx + 1} de ${total}`;
+
+            // Botones nav
+            document.getElementById('btn-anterior').disabled = (idx === 0);
+
+            const esUltima = (idx === total - 1);
+            const btnSig   = document.getElementById('btn-siguiente');
+            if (esUltima) {
+                const todasRespondidas = Object.keys(respondidas).length === total;
+                btnSig.innerHTML = '<i class="fa-solid fa-flag-checkered"></i> Ver resultados';
+                btnSig.disabled  = !todasRespondidas;
+                btnSig.onclick   = mostrarResultados;
+            } else {
+                btnSig.innerHTML = 'Siguiente <i class="fa-solid fa-arrow-right"></i>';
+                btnSig.disabled  = !yaRespondio;
+                btnSig.onclick   = () => irPregunta(1);
+            }
+
+            // Opciones
+            const opcionesHTML = Object.entries(q.opciones).map(([letra, texto]) => {
+                let cls = 'opt-btn';
+                if (yaRespondio) {
+                    if (letra === q.correcta)             cls += ' correct';
+                    else if (letra === respuestas[idx])   cls += ' wrong';
+                    else                                  cls += ' neutral';
+                }
+                return `
+                    <button class="${cls}" ${yaRespondio ? 'disabled' : ''}
+                        onclick="responder(${idx}, '${letra}')">
+                        <span class="opt-letter">${letra}</span>
+                        ${texto}
+                    </button>`;
+            }).join('');
+
+            const explicacionVisible = yaRespondio ? 'visible' : '';
+
+            document.getElementById('test-body').innerHTML = `
+                <div class="test-question-num">Pregunta ${idx + 1} / ${total}</div>
+                <div class="test-question-text">${q.pregunta}</div>
+                <div class="test-options">${opcionesHTML}</div>
+                <div class="test-explanation ${explicacionVisible}">
+                    <strong>${respuestas[idx] === q.correcta ? '✅ ¡Correcto!' : '❌ Incorrecto —'} Respuesta correcta: ${q.correcta}</strong><br>
+                    ${q.explicacion}
+                </div>`;
+        }
+
+        function responder(idx, letra) {
+            if (respondidas[idx]) return;
+            respuestas[idx]  = letra;
+            respondidas[idx] = true;
+            renderPregunta();
+        }
+
+        function irPregunta(delta) {
+            const nueva = preguntaActual + delta;
+            if (nueva < 0 || nueva >= testData.preguntas.length) return;
+            preguntaActual = nueva;
+            renderPregunta();
+        }
+
+        function mostrarResultados() {
+            const total     = testData.preguntas.length;
+            const correctas = testData.preguntas.filter((q, i) => respuestas[i] === q.correcta).length;
+            const pct       = Math.round((correctas / total) * 100);
+
+            let emoji = '🌱';
+            let msg   = 'Sigue estudiando, ¡tú puedes!';
+            if (pct >= 80) { emoji = '🏆'; msg = '¡Excelente trabajo!'; }
+            else if (pct >= 60) { emoji = '👍'; msg = 'Buen intento, repasa los temas fallidos.'; }
+
+            const reviewHTML = testData.preguntas.map((q, i) => {
+                const ok  = respuestas[i] === q.correcta;
+                const cls = ok ? 'ok' : 'fail';
+                return `
+                    <div class="review-item ${cls}">
+                        <div class="ri-q">${i + 1}. ${q.pregunta}</div>
+                        <div class="ri-a">
+                            Tu respuesta: <span class="${cls}">${respuestas[i]} — ${q.opciones[respuestas[i]]}</span>
+                            ${!ok ? `<br>Correcta: <span class="ok">${q.correcta} — ${q.opciones[q.correcta]}</span>` : ''}
+                        </div>
+                    </div>`;
+            }).join('');
+
+            document.getElementById('test-nav').style.display    = 'none';
+            document.getElementById('test-progress').style.width = '100%';
+            document.getElementById('test-body').innerHTML = `
+                <div class="test-results">
+                    <div class="test-score-circle">
+                        <span class="test-score-num">${correctas}</span>
+                        <span class="test-score-denom">/ ${total}</span>
+                    </div>
+                    <h4>${emoji} ${msg}</h4>
+                    <p>${pct}% de respuestas correctas</p>
+                    <button class="test-nav-btn primary" onclick="abrirTest()" style="margin:0 auto;">
+                        <i class="fa-solid fa-rotate"></i> Nuevo test
+                    </button>
+                    <div class="test-review">${reviewHTML}</div>
+                </div>`;
+        }
+    </script>
+</body>
+</html>
