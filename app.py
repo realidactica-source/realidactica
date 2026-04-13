@@ -693,7 +693,7 @@ def test_db():
 
 if __name__ == "__main__":
     # El servidor corre en el puerto 8080 con modo debug para desarrollo
-    app.run(port=8080, debug=True)
+    app.run(host="0.0.0.0", port=8080, debug=True)
 # --- CONFIGURACIÓN DE BASE DE DATOS ---
 app.config['MYSQL_HOST'] = '127.0.0.1'
 app.config['MYSQL_USER'] = 'root'
