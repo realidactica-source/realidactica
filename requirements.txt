@@ -2,5 +2,5 @@ flask
 flask-mysqldb
 flask-cors
 bcrypt
-google-generativeai
+google-genai
 mysqlclient
