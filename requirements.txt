@@ -1,0 +1,6 @@
+flask
+flask-mysqldb
+flask-cors
+bcrypt
+google-generativeai
+mysqlclient
