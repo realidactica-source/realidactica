@@ -1178,6 +1178,19 @@ def maestro_prin():
 @app.route("/")
 def index():
     return render_template("index.html")
+    
+@app.route('/test-db')
+def test_db():
+    try:
+        # Intentamos abrir la conexión y hacer una consulta básica
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT 1")
+        cursor.fetchone()
+        cursor.close()
+        return "¡Conexión exitosa a la base de datos de Railway para Realidáctica! 🚀"
+    except Exception as e:
+        # Si falla, nos mostrará exactamente cuál fue el error
+        return f"Error de conexión: {str(e)}"
 
 if __name__ == "__main__":
     # El servidor corre en el puerto 8080 con modo debug para desarrollo
