@@ -36,10 +36,11 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 app.secret_key = 'realidactica_2026_secure' 
 
 # --- CONFIGURACIÓN DE BASE DE DATOS ---
-app.config['MYSQL_HOST'] = '127.0.0.1'
+app.config['MYSQL_HOST'] = 'metro.proxy.rlwy.net'
+app.config['MYSQL_PORT'] = 36406
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'u515719198_realidactica'
+app.config['MYSQL_PASSWORD'] = 'JgBWYgwjRJSUjFiCMAyOmUJNJuTcMooK'
+app.config['MYSQL_DB'] = 'railway'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
