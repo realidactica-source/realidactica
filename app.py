@@ -111,7 +111,7 @@ def enviar_correo_confirmacion(nombre, correo_destino, token):
 
 # --- CONFIGURACIÓN IA GEMINI ---
 # Se utiliza la API Key proporcionada para el proyecto Realidáctica
-client = genai.Client(api_key="AIzaSyCnx7VcWY_wNuVXaOxymdYVNoWkM0y9crs")
+client = genai.Client(api_key="AIzaSyAY6LJnPfj9Yi0A5iB-mMxArulXLzou9VQ")
 
 # --- RUTA DEL CHAT INTELIGENTE (KADY GENERAL) ---
 @app.route("/consulta", methods=["POST"])
