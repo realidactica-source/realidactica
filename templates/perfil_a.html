@@ -1,60 +1,39 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal del Alumno - Realidáctica</title>
-    <link rel="stylesheet" href="/static/perfil.css">
-</head>
-<body>
-
-<div class="sidebar">
-    <div class="logo">Realidáctica</div>
-    <div class="menu">
-        <a href="#">Dashboard</a>
-        <a href="#">Ver Tareas</a>
-        <a href="#">Subir Tarea</a>
-        <a href="#">Calificaciones</a>
-        <a href="#">Material de Clases</a>
-        <a href="#">Mi Progreso</a>
-    </div>
-</div>
-
-<div class="main">
-    <h1 class="title">Bienvenido, {{ session['user_name'] if 'user_name' in session else 'Alumno' }}</h1>
-
-    <div class="grid">
-        <div class="card">
-            <h3>Mi Estilo de Aprendizaje</h3>
-            {% if info %}
-                <p>Tu estilo dominante es: <strong style="color: #0fd3c7;">{{ info.resultado_final }}</strong></p>
-                <div style="margin-top:10px; font-size: 0.9rem;">
-                    <p>Visual: {{ info.visual }}%</p>
-                    <p>Auditivo: {{ info.auditivo }}%</p>
-                    <p>Kinestésico: {{ info.kinestesico }}%</p>
+{% extends "base.html" %}
+{% block title %}Mi perfil · Realidáctica{% endblock %}
+{% block body_class %}app-page{% endblock %}
+{% block content %}
+<div class="app-shell">
+    <aside class="app-sidebar">
+        <a class="brand-lockup" href="{{ url_for('prin') }}"><span class="brand-mark">R</span><span>Realidáctica</span></a>
+        <nav class="app-nav">
+            <a class="nav-link" href="{{ url_for('prin') }}"><span>⌂</span>Resumen</a>
+            <a class="nav-link active" href="{{ url_for('portal_alumno') }}"><span>◎</span>Mi perfil</a>
+            <a class="nav-link" href="{{ url_for('encuesta') }}"><span>◇</span>Estilo de aprendizaje</a>
+        </nav>
+        <div class="sidebar-footer"><form action="{{ url_for('logout') }}" method="post"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><button class="btn btn-ghost btn-block">Cerrar sesión</button></form></div>
+    </aside>
+    <main class="app-main">
+        <header class="page-header"><div><span class="eyebrow">Perfil personal</span><h1>{{ session.user_name }}</h1><p>Tu forma de aprender también es una fortaleza.</p></div></header>
+        <section class="profile-grid">
+            <article class="panel profile-hero">
+                <span class="profile-avatar">{{ session.user_name[0] | upper }}</span>
+                <div><span class="eyebrow">Cuenta de estudiante</span><h2>{{ session.user_name }}</h2><p>Perfil activo y protegido</p></div>
+            </article>
+            <article class="panel learning-profile">
+                <div class="section-row"><div><span class="eyebrow">Diagnóstico</span><h2>Estilo de aprendizaje</h2></div>{% if info %}<span class="status-badge">{{ info.resultado_final }}</span>{% endif %}</div>
+                {% if info %}
+                <div class="meter-list">
+                    <div class="meter"><div><span>Visual</span><strong>{{ info.visual }}%</strong></div><progress value="{{ info.visual }}" max="100"></progress></div>
+                    <div class="meter"><div><span>Auditivo</span><strong>{{ info.auditivo }}%</strong></div><progress value="{{ info.auditivo }}" max="100"></progress></div>
+                    <div class="meter"><div><span>Kinestésico</span><strong>{{ info.kinestesico }}%</strong></div><progress value="{{ info.kinestesico }}" max="100"></progress></div>
                 </div>
-            {% else %}
-                <p>Aún no has realizado el test.</p>
-                <button onclick="window.location.href='/'" style="margin-top:10px;">Realizar Test </button>
-            {% endif %}
-        </div>
-
-        <div class="card">
-            <h3>Tareas disponibles</h3>
-            <ul class="lista">
-                <li>Tarea 1 - Liderazgo</li>
-                <li>Tarea 2 - Programación</li>
-            </ul>
-        </div>
-
-        <div class="card">
-            <h3>Mis calificaciones</h3>
-            <table>
-                <tr><th>Materia</th><th>Calificación</th></tr>
-                <tr><td>Programación</td><td>9.2</td></tr>
-            </table>
-        </div>
-    </div>
+                <a class="btn btn-secondary" href="{{ url_for('encuesta') }}">Repetir diagnóstico</a>
+                {% else %}
+                <div class="empty-state"><span>◇</span><h3>Aún no conocemos tu estilo</h3><p>Responde una evaluación breve para personalizar tu experiencia.</p><a class="btn btn-primary" href="{{ url_for('encuesta') }}">Comenzar evaluación</a></div>
+                {% endif %}
+            </article>
+            <article class="panel"><span class="eyebrow">Siguiente paso</span><h2>Recomendación</h2><p class="muted">Combina lectura, práctica y preguntas breves. La variedad ayuda a consolidar conceptos.</p><a class="text-link" href="{{ url_for('prin') }}">Volver a mis clases →</a></article>
+        </section>
+    </main>
 </div>
-</body>
-</html>
+{% endblock %}

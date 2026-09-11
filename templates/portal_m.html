@@ -1,111 +1,19 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Maestros - Realidáctica</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/portal_m.css">
-</head>
-<body>
-
-<div class="sidebar">
-    <div class="logo">Realidáctica</div>
-    <div class="menu">
-        <a href="#" class="active"><i class="fa-solid fa-border-all"></i> Dashboard</a>
-        <a href="#"><i class="fa-solid fa-upload"></i> Subir Tareas</a>
-        <a href="#"><i class="fa-solid fa-graduation-cap"></i> Carreras y Grupos</a>
-        <a href="#"><i class="fa-solid fa-folder"></i> Archivos</a>
-        <a href="#"><i class="fa-solid fa-chalkboard-user"></i> Asesorías</a>
-    </div>
-
-    <div class="ai-chat-container">
-        <div class="ai-widget">
-            <div class="ai-header">
-                <div class="ai-avatar">
-                    <i class="fa-solid fa-robot"></i>
-                    <span class="online-status"></span>
-                </div>
-                <p class="ai-greeting">Asistente IA</p>
-            </div>
-            <div class="ai-history" id="chat-history">
-                </div>
-            <div class="ai-input-group">
-                <input type="text" id="chat-input" placeholder="Pregunta algo...">
-                <button class="ai-send-btn" id="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="main">
-    <div class="title">Panel de Control Docente</div>
-
-    <div class="grid">
-        <div class="card" style="grid-column: span 2;">
-            <h3>Área de Trabajo Rápido: Asignación de Material</h3>
-            <div class="workspace-container">
-                
-                <div class="upload-zone" id="drop-zone">
-                    <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: var(--neon-red); margin-bottom: 12px;"></i>
-                    <p id="file-name-display">Arrastra tu archivo PDF aquí o haz clic para explorar</p>
-                    <input type="file" id="quick-pdf-upload" accept="application/pdf" hidden>
-                    <button type="button" class="btn-outline" onclick="document.getElementById('quick-pdf-upload').click()">
-                        <i class="fa-solid fa-folder-open"></i> Explorar Archivos
-                    </button>
-                </div>
-
-                <div class="assignment-details">
-                    <label class="file-label">Seleccionar Programa Académico:</label>
-                    <select id="quick-carrera">
-                        <option value="" disabled selected>Seleccionar Carrera...</option>
-                        <option value="ITI">Ingeniería en Tecnologías de la Información</option>
-                        <option value="MEC">Mecatrónica</option>
-                        <option value="MI">Mantenimiento Industrial</option>
-                        <option value="DS">Desarrollo de Software</option>
-                    </select>
-                    
-                    <label class="file-label">Identificador del Grupo:</label>
-                    <input type="text" id="quick-grupo" placeholder="Ej: GDS0542 o 4°A">
-                    
-                    <button class="btn-primary" id="btn-quick-assign">
-                        <i class="fa-solid fa-rocket"></i> Asignar Material
-                    </button>
-
-                    <div id="upload-progress-container" style="display: none; margin-top: 15px;">
-                        <div class="progress-bar-bg" style="background: rgba(255,255,255,0.1); border-radius: 4px; height: 8px; width: 100%; overflow: hidden;">
-                            <div id="upload-progress-fill" style="background: var(--neon-blue); height: 100%; width: 0%; transition: width 0.3s ease;"></div>
-                        </div>
-                        <small id="upload-status-text" style="color: var(--neon-blue); font-size: 0.75rem; margin-top: 5px; display: block; text-align: right;">0%</small>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-
-        <div class="card" style="grid-column: span 2;">
-            <h3>Publicar Tarea Detallada</h3>
-            <form action="#" method="post" enctype="multipart/form-data">
-                <input type="text" placeholder="Título de la actividad" required>
-                <textarea placeholder="Descripción y criterios de evaluación..." required rows="4"></textarea>
-                
-                <div style="display: flex; gap: 20px;">
-                    <div style="flex: 1;">
-                        <label class="file-label">Material de apoyo (Adicional):</label>
-                        <input type="file" class="file-input" name="archivo_tarea">
-                    </div>
-                    <div style="flex: 1;">
-                        <label class="file-label">Fecha de entrega:</label>
-                        <input type="date" required>
-                    </div>
-                </div>
-                
-                <button type="submit" style="margin-top: 15px;">Subir Tarea a la Plataforma</button>
+{% extends "base.html" %}
+{% block title %}Materiales docentes · Realidáctica{% endblock %}
+{% block body_class %}app-page{% endblock %}
+{% block content %}
+<div class="app-shell">
+    <aside class="app-sidebar"><a class="brand-lockup" href="{{ url_for('maestro_prin') }}"><span class="brand-mark">R</span><span>Realidáctica</span></a><nav class="app-nav"><a class="nav-link" href="{{ url_for('maestro_prin') }}"><span>⌂</span>Resumen</a><a class="nav-link active" href="{{ url_for('maestro_portal') }}"><span>⇧</span>Materiales</a><a class="nav-link" href="{{ url_for('gestion') }}"><span>◇</span>Grupos</a></nav><div class="sidebar-footer"><form action="{{ url_for('logout') }}" method="post"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><button class="btn btn-ghost btn-block">Cerrar sesión</button></form></div></aside>
+    <main class="app-main">
+        <header class="page-header"><div><span class="eyebrow">Recursos docentes</span><h1>Asigna material</h1><p>Publica documentos PDF para un grupo específico.</p></div></header>
+        <section class="upload-layout">
+            <form class="panel upload-card" id="material-form" enctype="multipart/form-data">
+                <div class="upload-zone" id="drop-zone"><span class="upload-icon">⇧</span><h2>Selecciona un PDF</h2><p id="file-name-display">Arrastra un archivo aquí o usa el selector.</p><label class="btn btn-secondary" for="quick-pdf-upload">Explorar archivos</label><input type="file" id="quick-pdf-upload" name="archivo" accept="application/pdf,.pdf" hidden required><small>PDF · máximo 15 MB</small></div>
+                <div class="form-section"><label><span>Grupo de destino</span><select id="quick-grupo" name="grupo_id" required><option value="">Seleccionar grupo</option>{% for grupo in grupos %}<option value="{{ grupo.id }}">{{ grupo.nombre }}</option>{% endfor %}</select></label><button class="btn btn-primary btn-block" id="btn-quick-assign" type="submit">Asignar material</button><div class="upload-status" id="upload-status" aria-live="polite"></div></div>
             </form>
-        </div>
-    </div>
+            <aside class="panel guidance-card"><span class="eyebrow">Buenas prácticas</span><h2>Material claro y seguro</h2><ul class="check-list"><li>Usa nombres descriptivos.</li><li>Verifica que el grupo sea correcto.</li><li>No incluyas información personal innecesaria.</li><li>El servidor valida formato y tamaño.</li></ul><a class="text-link" href="{{ url_for('gestion') }}">Administrar grupos →</a></aside>
+        </section>
+    </main>
 </div>
-
-<script src="/static/js/tarea.js"></script>
-</body>
-</html>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/tarea.js') }}" defer></script>{% endblock %}

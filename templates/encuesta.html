@@ -1,50 +1,16 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IA de Aprendizaje</title>
-
-  <link rel="stylesheet" href="/static/encuesta.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-
-  <div class="container">
-    <h1>Realidáctica</h1>
-    <p class="subtitle">Responde y descubre cómo aprendes mejor</p>
-
-    <!-- QUIZ -->
-    <div id="quiz">
-
-      <!-- Barra de progreso -->
-      <div class="progress-container">
-        <div id="progressBar"></div>
-      </div>
-
-      <!-- Pregunta -->
-      <h2 id="question"></h2>
-
-      <!-- Opciones -->
-      <div class="options">
-        <button id="btnA" onclick="answer('A')"></button>
-        <button id="btnB" onclick="answer('B')"></button>
-        <button id="btnC" onclick="answer('C')"></button>
-      </div>
-
-    </div>
-
-    <!-- RESULTADO -->
-    <div id="result" class="hidden">
-      <h2 id="learningType"></h2>
-      <canvas id="chart"></canvas>
-
-      <!-- BOTÓN VOLVER -->
-      <button onclick="goToHome()">Volver al Inicio</button>
-    </div>
-
-  </div>
-
-  <script src="/static/js/encuesta.js" defer></script>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Estilo de aprendizaje · Realidáctica{% endblock %}
+{% block body_class %}quiz-page{% endblock %}
+{% block content %}
+<main class="quiz-shell">
+    <header class="quiz-topbar"><a class="brand-lockup" href="{{ url_for('prin') }}"><span class="brand-mark">R</span><span>Realidáctica</span></a><a class="btn btn-ghost" href="{{ url_for('portal_alumno') }}">Volver al perfil</a></header>
+    <section class="quiz-card panel" id="learning-quiz">
+        <div class="quiz-intro"><span class="eyebrow">Diagnóstico adaptativo</span><h1>¿Cómo aprendes mejor?</h1><p>Elige la opción que más se parezca a ti. No hay respuestas correctas.</p></div>
+        <div class="quiz-progress"><div><span id="quiz-step">Pregunta 1 de 8</span><span id="quiz-percent">12%</span></div><progress id="quiz-progress" value="1" max="8"></progress></div>
+        <div id="quiz-question" class="quiz-question" aria-live="polite"></div>
+        <div id="quiz-options" class="quiz-options"></div>
+        <div id="quiz-result" class="quiz-result" hidden></div>
+    </section>
+</main>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/encuesta.js') }}" defer></script>{% endblock %}

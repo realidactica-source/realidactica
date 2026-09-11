@@ -1,62 +1,16 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión Académica - Realidáctica</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/grupos.css">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <a href="{{ url_for('maestro_portal') }}" class="back-link"><i class="fa-solid fa-chevron-left"></i> Volver al Portal</a>
-            <h1>Configuración de Oferta Académica</h1>
-        </header>
-
-        <div class="forms-grid">
-            <div class="card">
-                <h3><i class="fa-solid fa-plus-circle"></i> Nueva Carrera</h3>
-                <form action="{{ url_for('crear_carrera') }}" method="POST">
-                    <input type="text" name="nombre_carrera" placeholder="Nombre de la carrera..." required>
-                    <button type="submit" class="btn-main">Guardar Carrera</button>
-                </form>
-            </div>
-
-            <div class="card">
-                <h3><i class="fa-solid fa-users-gear"></i> Crear Grupo</h3>
-                <form action="{{ url_for('crear_grupo') }}" method="POST">
-                    <select name="carrera_id" required>
-                        <option value="" disabled selected>Selecciona Carrera</option>
-                        {% for carrera in carreras %}
-                        <option value="{{ carrera.id }}">{{ carrera.nombre }}</option>
-                        {% endfor %}
-                    </select>
-                    <input type="text" name="nombre_grupo" placeholder="Ej: GDS0542" required>
-                    <button type="submit" class="btn-sec">Registrar Grupo</button>
-                </form>
-            </div>
-        </div>
-
-        <div class="data-table">
-            <h3>Grupos y Carreras Existentes</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Grupo</th>
-                        <th>Carrera</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for g in grupos_lista %}
-                    <tr>
-                        <td>{{ g.grupo }}</td>
-                        <td>{{ g.carrera }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Gestión académica · Realidáctica{% endblock %}
+{% block body_class %}app-page{% endblock %}
+{% block content %}
+<div class="app-shell">
+    <aside class="app-sidebar"><a class="brand-lockup" href="{{ url_for('maestro_prin') }}"><span class="brand-mark">R</span><span>Realidáctica</span></a><nav class="app-nav"><a class="nav-link" href="{{ url_for('maestro_prin') }}"><span>⌂</span>Resumen</a><a class="nav-link" href="{{ url_for('maestro_portal') }}"><span>⇧</span>Materiales</a><a class="nav-link active" href="{{ url_for('gestion') }}"><span>◇</span>Grupos</a></nav></aside>
+    <main class="app-main">
+        <header class="page-header"><div><span class="eyebrow">Configuración académica</span><h1>Carreras y grupos</h1><p>Crea la estructura que utilizarás al asignar materiales.</p></div></header>
+        <section class="management-grid">
+            <form class="panel stack-form" action="{{ url_for('crear_carrera') }}" method="post"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><span class="eyebrow">Nueva carrera</span><h2>Programa académico</h2><label><span>Nombre</span><input name="nombre_carrera" maxlength="150" required placeholder="Ej. Desarrollo de Software"></label><button class="btn btn-primary" type="submit">Guardar carrera</button></form>
+            <form class="panel stack-form" action="{{ url_for('crear_grupo') }}" method="post"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><span class="eyebrow">Nuevo grupo</span><h2>Grupo académico</h2><label><span>Carrera</span><select name="carrera_id" required><option value="">Seleccionar</option>{% for carrera in carreras %}<option value="{{ carrera.id }}">{{ carrera.nombre }}</option>{% endfor %}</select></label><label><span>Identificador</span><input name="nombre_grupo" maxlength="50" required placeholder="Ej. GDS0542"></label><button class="btn btn-secondary" type="submit">Crear grupo</button></form>
+        </section>
+        <section class="panel table-panel"><div class="section-row"><div><span class="eyebrow">Directorio</span><h2>Grupos existentes</h2></div><span class="status-badge">{{ grupos_lista | length }}</span></div><div class="table-wrap"><table><thead><tr><th>Grupo</th><th>Carrera</th></tr></thead><tbody>{% for group in grupos_lista %}<tr><td>{{ group.grupo }}</td><td>{{ group.carrera }}</td></tr>{% else %}<tr><td colspan="2">Aún no hay grupos registrados.</td></tr>{% endfor %}</tbody></table></div></section>
+    </main>
+</div>
+{% endblock %}

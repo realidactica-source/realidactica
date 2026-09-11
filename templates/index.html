@@ -1,63 +1,93 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Realidáctica</title>
+{% extends "base.html" %}
+{% block title %}Realidáctica · Aprendizaje inteligente{% endblock %}
+{% block body_class %}landing-page{% endblock %}
+{% block content %}
+<header class="landing-nav container-wide">
+    <a class="brand-lockup" href="{{ url_for('index') }}" aria-label="Realidáctica, inicio">
+        <span class="brand-mark">R</span>
+        <span>Realidáctica</span>
+    </a>
+    <nav class="landing-actions" aria-label="Navegación principal">
+        <a class="btn btn-ghost" href="#capacidades">Capacidades</a>
+        <a class="btn btn-primary" href="{{ url_for('login') }}">Iniciar sesión</a>
+    </nav>
+</header>
 
-  <!-- Fuentes -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<main>
+    <section class="hero container-wide">
+        <div class="hero-copy">
+            <span class="eyebrow"><span class="status-dot"></span> Educación adaptativa con IA</span>
+            <h1>Aprender mejor se siente <span>natural.</span></h1>
+            <p class="hero-lead">Un entorno académico claro, personalizado y conectado que convierte cada clase en una experiencia de aprendizaje activa.</p>
+            <div class="hero-actions">
+                <a class="btn btn-primary btn-large" href="{{ url_for('registro') }}">Crear mi cuenta</a>
+                <a class="btn btn-secondary btn-large" href="{{ url_for('login') }}">Ya tengo acceso</a>
+            </div>
+            <div class="trust-row" aria-label="Beneficios principales">
+                <span>✓ Tutoría contextual</span>
+                <span>✓ Evaluaciones inteligentes</span>
+                <span>✓ Progreso personal</span>
+            </div>
+        </div>
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
+        <div class="hero-visual" aria-label="Vista previa del producto">
+            <div class="preview-window glass-panel">
+                <div class="preview-topbar">
+                    <div class="window-dots"><span></span><span></span><span></span></div>
+                    <span class="preview-pill">Panel del estudiante</span>
+                </div>
+                <div class="preview-grid">
+                    <div class="preview-sidebar">
+                        <span class="preview-logo">R</span>
+                        <span class="preview-line active"></span>
+                        <span class="preview-line"></span>
+                        <span class="preview-line short"></span>
+                    </div>
+                    <div class="preview-content">
+                        <span class="preview-kicker">Tu siguiente paso</span>
+                        <div class="preview-title"></div>
+                        <div class="preview-cards">
+                            <div class="mini-course violet"><span>01</span><strong>Cálculo</strong></div>
+                            <div class="mini-course cyan"><span>02</span><strong>Frameworks</strong></div>
+                        </div>
+                        <div class="preview-chat">
+                            <span class="ai-orb">K</span>
+                            <div><strong>Kady</strong><p>¿Repasamos el concepto clave de hoy?</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <!-- HERO -->
-  <section class="hero">
-    <video autoplay muted loop>
-      <source src="/static/js/video.mp4" type="video/mp4">
-    </video>
+    <section class="feature-section container-wide" id="capacidades">
+        <div class="section-heading">
+            <span class="eyebrow">Diseñado para avanzar</span>
+            <h2>Menos ruido. Más comprensión.</h2>
+            <p>Cada función tiene un propósito: ayudarte a entender, practicar y ver tu progreso.</p>
+        </div>
+        <div class="feature-grid">
+            <article class="feature-card">
+                <span class="feature-icon">✦</span>
+                <h3>Kady, tu tutora con IA</h3>
+                <p>Respuestas breves y contextualizadas a tus materias con GPT‑5.6 Luna.</p>
+            </article>
+            <article class="feature-card">
+                <span class="feature-icon">◎</span>
+                <h3>Aprendizaje adaptativo</h3>
+                <p>Conoce tu estilo de aprendizaje y recibe explicaciones que encajan contigo.</p>
+            </article>
+            <article class="feature-card">
+                <span class="feature-icon">↗</span>
+                <h3>Progreso visible</h3>
+                <p>Material, pruebas y resultados reunidos en una interfaz sencilla y consistente.</p>
+            </article>
+        </div>
+    </section>
+</main>
 
-    <div class="hero-content">
-      <h1>Realidáctica</h1>
-      <p>Aprendizaje inteligente, visual e inmersivo</p>
-      <button class="cta" onclick="window.location.href='/login'">
-          Iniciar sesión
-      </button>
-    </div>
-  </section>
-
-  <!-- INFO -->
-  <section class="section">
-    <h2>¿Qué es Realidáctica?</h2>
-    <p>
-      Realidáctica es una plataforma educativa que integra Inteligencia Artificial, 
-      personalización del aprendizaje y experiencias visuales para transformar la educación.
-    </p>
-
-    <div class="cards">
-      <div class="card">
-        <h3>IA Inteligente</h3>
-        <p>Analiza contenido y genera actividades personalizadas automáticamente.</p>
-      </div>
-
-      <div class="card">
-        <h3>Experiencia Visual</h3>
-        <p>Comprende conceptos complejos de forma clara y dinámica.</p>
-      </div>
-
-      <div class="card">
-        <h3>Seguimiento</h3>
-        <p>Monitorea el progreso y adapta el aprendizaje.</p>
-      </div>
-
-      <div class="card">
-        <h3>Gamificación</h3>
-        <p>Aprende de forma dinámica y motivadora.</p>
-      </div>
-    </div>
-  </section>
-
-</body>
-</html>
+<footer class="landing-footer container-wide">
+    <span>© 2026 Realidáctica</span>
+    <span>Aprendizaje con intención.</span>
+</footer>
+{% endblock %}

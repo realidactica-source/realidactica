@@ -1,123 +1,81 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Referencias del DOM para Drag & Drop
-    const dropZone = document.getElementById('drop-zone');
-    const fileInput = document.getElementById('quick-pdf-upload');
-    const fileNameDisplay = document.getElementById('file-name-display');
-    const btnAssign = document.getElementById('btn-quick-assign');
-    const selectCarrera = document.getElementById('quick-carrera');
-    const inputGrupo = document.getElementById('quick-grupo');
-    
-    // Referencias para la barra de progreso
-    const progressContainer = document.getElementById('upload-progress-container');
-    const progressFill = document.getElementById('upload-progress-fill');
-    const progressText = document.getElementById('upload-status-text');
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("material-form");
+  const dropZone = document.getElementById("drop-zone");
+  const fileInput = document.getElementById("quick-pdf-upload");
+  const fileLabel = document.getElementById("file-name-display");
+  const group = document.getElementById("quick-grupo");
+  const button = document.getElementById("btn-quick-assign");
+  const status = document.getElementById("upload-status");
+  const csrf = document.querySelector('meta[name="csrf-token"]')?.content || "";
+  if (!form || !dropZone || !fileInput || !fileLabel || !group || !button || !status) return;
 
-    // Manejar la selección manual de archivo
-    fileInput.addEventListener('change', (e) => {
-        handleFiles(e.target.files);
-    });
+  let selectedFile = null;
 
-    // Eventos de Drag & Drop
-    dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('dragover');
-    });
+  function setStatus(message, type = "") {
+    status.className = `upload-status ${type}`.trim();
+    status.textContent = message;
+  }
 
-    dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('dragover');
-    });
-
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('dragover');
-        if (e.dataTransfer.files.length > 0) {
-            // Validar que sea PDF
-            if(e.dataTransfer.files[0].type === "application/pdf" || e.dataTransfer.files[0].name.endsWith('.pdf')) {
-                fileInput.files = e.dataTransfer.files; 
-                handleFiles(e.dataTransfer.files);
-            } else {
-                alert('⚠️ Por favor, sube únicamente archivos PDF.');
-            }
-        }
-    });
-
-    // Función para mostrar el nombre del archivo
-    function handleFiles(files) {
-        if (files.length > 0) {
-            const fileName = files[0].name;
-            fileNameDisplay.innerHTML = `<i class="fa-solid fa-check" style="color: var(--neon-green);"></i> Archivo listo: <strong>${fileName}</strong>`;
-            fileNameDisplay.style.color = '#fff';
-            dropZone.style.borderColor = 'var(--neon-green)';
-        } else {
-            resetUploadZone();
-        }
+  function selectFile(file) {
+    if (!file) return;
+    if (!file.name.toLowerCase().endsWith(".pdf")) {
+      selectedFile = null;
+      fileLabel.textContent = "Selecciona únicamente archivos PDF.";
+      setStatus("Formato no permitido.", "error");
+      return;
     }
-
-    // Resetear la zona visualmente
-    function resetUploadZone() {
-        fileNameDisplay.innerHTML = 'Arrastra tu archivo PDF aquí o haz clic para explorar';
-        fileNameDisplay.style.color = 'var(--text-gray)';
-        dropZone.style.borderColor = 'var(--neon-blue)';
-        fileInput.value = '';
+    if (file.size > 15 * 1024 * 1024) {
+      selectedFile = null;
+      fileLabel.textContent = "El archivo supera 15 MB.";
+      setStatus("Archivo demasiado grande.", "error");
+      return;
     }
+    selectedFile = file;
+    fileLabel.textContent = `Listo: ${file.name}`;
+    setStatus("Archivo validado en el navegador.");
+  }
 
-    // Acción del botón de asignar con simulación de progreso
-    btnAssign.addEventListener('click', () => {
-        const file = fileInput.files[0];
-        const carrera = selectCarrera.options[selectCarrera.selectedIndex].text;
-        const grupo = inputGrupo.value.trim();
+  fileInput.addEventListener("change", () => selectFile(fileInput.files?.[0]));
+  ["dragenter", "dragover"].forEach((name) => dropZone.addEventListener(name, (event) => {
+    event.preventDefault();
+    dropZone.classList.add("dragover");
+  }));
+  ["dragleave", "drop"].forEach((name) => dropZone.addEventListener(name, (event) => {
+    event.preventDefault();
+    dropZone.classList.remove("dragover");
+  }));
+  dropZone.addEventListener("drop", (event) => selectFile(event.dataTransfer?.files?.[0]));
 
-        // Validaciones básicas
-        if (!file) {
-            alert('⚠️ Por favor, selecciona un archivo PDF primero.');
-            return;
-        }
-        if (selectCarrera.value === "" || grupo === "") {
-            alert('⚠️ Por favor, selecciona la carrera e ingresa el grupo de destino.');
-            return;
-        }
-
-        // Iniciar simulación de subida
-        btnAssign.disabled = true;
-        const originalText = btnAssign.innerHTML;
-        btnAssign.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
-        btnAssign.style.opacity = '0.7';
-        
-        // Mostrar barra de progreso
-        progressContainer.style.display = 'block';
-        progressFill.style.width = '0%';
-        progressText.innerText = '0%';
-
-        let progress = 0;
-        
-        // Simular el tiempo de carga hacia tu backend
-        const uploadInterval = setInterval(() => {
-            progress += Math.random() * 15; // Incrementar aleatoriamente
-            if (progress > 100) progress = 100;
-            
-            progressFill.style.width = `${progress}%`;
-            progressText.innerText = `${Math.floor(progress)}%`;
-
-            if (progress === 100) {
-                clearInterval(uploadInterval);
-                
-                setTimeout(() => {
-                    alert(`✅ ¡Material subido con éxito al servidor!\n\nArchivo: ${file.name}\nDestino: ${grupo} - ${carrera}\n\nListo para ser consumido por la plataforma educativa.`);
-                    
-                    // Limpiar el formulario después del éxito
-                    resetUploadZone();
-                    selectCarrera.value = "";
-                    inputGrupo.value = "";
-                    btnAssign.innerHTML = originalText;
-                    btnAssign.disabled = false;
-                    btnAssign.style.opacity = '1';
-                    
-                    // Ocultar barra de progreso
-                    progressContainer.style.display = 'none';
-                    progressFill.style.width = '0%';
-                    
-                }, 500);
-            }
-        }, 300);
-    });
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!selectedFile || !group.value) {
+      setStatus("Selecciona un PDF y un grupo de destino.", "error");
+      return;
+    }
+    const payload = new FormData();
+    payload.append("archivo", selectedFile, selectedFile.name);
+    payload.append("grupo_id", group.value);
+    button.disabled = true;
+    button.textContent = "Asignando…";
+    setStatus("Subiendo y validando el material…");
+    try {
+      const response = await fetch("/api/materiales", {
+        method: "POST",
+        body: payload,
+        credentials: "same-origin",
+        headers: { "X-CSRF-Token": csrf },
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "No fue posible guardar el material.");
+      setStatus(data.mensaje || "Material asignado.", "success");
+      form.reset();
+      selectedFile = null;
+      fileLabel.textContent = "Arrastra un archivo aquí o usa el selector.";
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "No fue posible guardar el material.", "error");
+    } finally {
+      button.disabled = false;
+      button.textContent = "Asignar material";
+    }
+  });
 });

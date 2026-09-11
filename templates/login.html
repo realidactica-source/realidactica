@@ -1,34 +1,43 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Realidáctica</title>
-  <link rel="stylesheet" href="/static/login.css" />
-</head>
-<body>
-  <main class="wrap">
-    <h1 class="brand">Realidáctica</h1>
+{% extends "base.html" %}
+{% block title %}Iniciar sesión · Realidáctica{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+{% block content %}
+<main class="auth-shell">
+    <section class="auth-story">
+        <a class="brand-lockup" href="{{ url_for('index') }}">
+            <span class="brand-mark">R</span><span>Realidáctica</span>
+        </a>
+        <div class="auth-story-copy">
+            <span class="eyebrow">Tu espacio de aprendizaje</span>
+            <h1>Continúa justo donde lo dejaste.</h1>
+            <p>Clases, materiales, progreso y tutoría inteligente en un solo lugar.</p>
+        </div>
+        <div class="auth-signal glass-panel">
+            <span class="ai-orb">K</span>
+            <div><strong>Kady está lista</strong><p>Conectada con GPT‑5.6 Luna</p></div>
+            <span class="status-badge">En línea</span>
+        </div>
+    </section>
 
-    <div class="mascot">
-      <img src="/static/js/KADY3D.png" alt="Mascota" />
-      <div class="aura aura--1"></div>
-    </div>
-
-    <form class="card form" method="post" action="/login">
-      <h2>Iniciar sesión</h2>
-      <div class="input-group">
-        <input type="text" name="usuario" placeholder="Usuario" required />
-      </div>
-      <div class="input-group">
-        <input type="password" name="password" placeholder="Contraseña" required />
-      </div>
-      
-      <button type="submit" class="form__button" style="width:100%; padding:10px; background:#0fd3c7; border:none; border-radius:8px; cursor:pointer;">Entrar</button>
-      
-      <a href="/registro" style="display:block; width:100%; padding:10px; background:#f0f0f0; color:#333; border:none; border-radius:8px; cursor:pointer; text-align:center; text-decoration:none; margin-top:15px; box-sizing:border-box; font-size:14px;">Registro</a>
-      
-    </form>
-  </main>
-</body>
-</html>
+    <section class="auth-form-wrap">
+        <div class="auth-card">
+            <span class="eyebrow">Bienvenido de nuevo</span>
+            <h2>Inicia sesión</h2>
+            <p class="muted">Usa tu matrícula, correo o nombre de usuario.</p>
+            <form method="post" action="{{ url_for('login') }}" class="stack-form">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                <label>
+                    <span>Usuario</span>
+                    <input type="text" name="usuario" autocomplete="username" maxlength="150" required autofocus placeholder="Matrícula o correo">
+                </label>
+                <label>
+                    <span>Contraseña</span>
+                    <input type="password" name="password" autocomplete="current-password" maxlength="256" required placeholder="Tu contraseña">
+                </label>
+                <button class="btn btn-primary btn-block" type="submit">Entrar a Realidáctica</button>
+            </form>
+            <p class="auth-switch">¿Aún no tienes cuenta? <a href="{{ url_for('registro') }}">Crear cuenta</a></p>
+        </div>
+    </section>
+</main>
+{% endblock %}
