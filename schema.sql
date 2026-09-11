@@ -1,8 +1,4 @@
-CREATE DATABASE IF NOT EXISTS realidactica
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-
-USE realidactica;
+-- Ejecutar dentro de la base indicada por MYSQL_DB.
 
 CREATE TABLE IF NOT EXISTS usuarios (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,

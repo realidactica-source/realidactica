@@ -12,6 +12,10 @@ Plataforma educativa Flask con paneles para estudiantes y docentes, tutoría con
 
 La aplicación usa `gpt-5.6-luna` mediante OpenAI Responses API. La clave se lee únicamente desde `OPENAI_API_KEY`.
 
+## Despliegue en Railway
+
+El `Dockerfile` ejecuta `scripts/init_db.py` antes de iniciar Gunicorn. Configura `APP_ENV=production`, una `SECRET_KEY` aleatoria y las variables `MYSQL_*` mediante referencias privadas al servicio MySQL de Railway. `OPENAI_API_KEY` y las variables de Gmail son opcionales para el arranque, pero necesarias para la tutoría y el correo de confirmación.
+
 ## Seguridad
 
 Consulta `SECURITY_AUDIT.md`. Antes de desplegar, rota las credenciales que aparecieron en versiones anteriores del repositorio.
