@@ -16,7 +16,7 @@ La aplicación usa `gpt-5.6-luna` mediante OpenAI Responses API. La clave se lee
 
 El `Dockerfile` ejecuta `scripts/init_db.py` antes de iniciar Gunicorn. Configura `APP_ENV=production`, una `SECRET_KEY` aleatoria y las variables `MYSQL_*` mediante referencias privadas al servicio MySQL de Railway. `OPENAI_API_KEY` y las variables de Gmail son opcionales para el arranque, pero necesarias para la tutoría y el correo de confirmación.
 
-Para crear un usuario inicial puede definirse temporalmente `BOOTSTRAP_DEMO_PASSWORD` junto con `BOOTSTRAP_DEMO_USERNAME`, `BOOTSTRAP_DEMO_EMAIL` y `BOOTSTRAP_DEMO_ROLE` (`alumno` o `docente`). Elimina esas variables después del primer despliegue; la cuenta queda guardada con bcrypt en MySQL.
+Para crear un usuario inicial puede definirse temporalmente `BOOTSTRAP_DEMO_PASSWORD` junto con `BOOTSTRAP_DEMO_USERNAME`, `BOOTSTRAP_DEMO_EMAIL` y `BOOTSTRAP_DEMO_ROLE` (`alumno` o `maestro`). Elimina esas variables después del primer despliegue; la cuenta queda guardada con bcrypt en MySQL.
 
 ## Seguridad
 

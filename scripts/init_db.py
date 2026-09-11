@@ -52,10 +52,10 @@ def seed_demo_user(connection: MySQLdb.Connection) -> bool:
     username = os.getenv("BOOTSTRAP_DEMO_USERNAME", "alumno.demo").strip()[:50]
     email = os.getenv("BOOTSTRAP_DEMO_EMAIL", "alumno.demo@realidactica.local").strip().lower()[:150]
     role = os.getenv("BOOTSTRAP_DEMO_ROLE", "alumno").strip().lower()
-    if role not in {"alumno", "docente"}:
-        raise RuntimeError("BOOTSTRAP_DEMO_ROLE debe ser alumno o docente")
+    if role not in {"alumno", "maestro"}:
+        raise RuntimeError("BOOTSTRAP_DEMO_ROLE debe ser alumno o maestro")
 
-    first_name = "Docente" if role == "docente" else "Alex"
+    first_name = "Docente" if role == "maestro" else "Alex"
     password_hash = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
     cursor = connection.cursor()
     cursor.execute(
