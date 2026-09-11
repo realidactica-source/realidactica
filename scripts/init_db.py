@@ -42,7 +42,7 @@ def connect_with_retry(attempts: int = 20) -> MySQLdb.Connection:
     raise RuntimeError("MySQL no estuvo disponible durante el arranque") from last_error
 
 
-def seed_demo_student(connection: MySQLdb.Connection) -> bool:
+def seed_demo_user(connection: MySQLdb.Connection) -> bool:
     password = os.getenv("BOOTSTRAP_DEMO_PASSWORD", "")
     if not password:
         return False
@@ -51,6 +51,11 @@ def seed_demo_student(connection: MySQLdb.Connection) -> bool:
 
     username = os.getenv("BOOTSTRAP_DEMO_USERNAME", "alumno.demo").strip()[:50]
     email = os.getenv("BOOTSTRAP_DEMO_EMAIL", "alumno.demo@realidactica.local").strip().lower()[:150]
+    role = os.getenv("BOOTSTRAP_DEMO_ROLE", "alumno").strip().lower()
+    if role not in {"alumno", "docente"}:
+        raise RuntimeError("BOOTSTRAP_DEMO_ROLE debe ser alumno o docente")
+
+    first_name = "Docente" if role == "docente" else "Alex"
     password_hash = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
     cursor = connection.cursor()
     cursor.execute(
@@ -61,14 +66,14 @@ def seed_demo_student(connection: MySQLdb.Connection) -> bool:
     if existing:
         cursor.execute(
             "UPDATE usuarios SET nombre=%s, apellido=%s, correo=%s, usuario=%s, pass_hash=%s, "
-            "rol='alumno', activo=1, token_confirmacion=NULL, token_creado=NULL WHERE id=%s",
-            ("Alex", "Demo", email, username, password_hash, existing[0]),
+            "rol=%s, activo=1, token_confirmacion=NULL, token_creado=NULL WHERE id=%s",
+            (first_name, "Demo", email, username, password_hash, role, existing[0]),
         )
     else:
         cursor.execute(
             "INSERT INTO usuarios (nombre, apellido, correo, usuario, pass_hash, rol, activo) "
-            "VALUES (%s, %s, %s, %s, %s, 'alumno', 1)",
-            ("Alex", "Demo", email, username, password_hash),
+            "VALUES (%s, %s, %s, %s, %s, %s, 1)",
+            (first_name, "Demo", email, username, password_hash, role),
         )
     cursor.close()
     return True
@@ -86,7 +91,7 @@ def main() -> None:
         for statement in statements:
             cursor.execute(statement)
         cursor.close()
-        seeded = seed_demo_student(connection)
+        seeded = seed_demo_user(connection)
         connection.commit()
     except Exception:
         connection.rollback()
