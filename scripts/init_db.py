@@ -4,6 +4,7 @@ import os
 import time
 from pathlib import Path
 
+import bcrypt
 import MySQLdb
 
 
@@ -41,6 +42,38 @@ def connect_with_retry(attempts: int = 20) -> MySQLdb.Connection:
     raise RuntimeError("MySQL no estuvo disponible durante el arranque") from last_error
 
 
+def seed_demo_student(connection: MySQLdb.Connection) -> bool:
+    password = os.getenv("BOOTSTRAP_DEMO_PASSWORD", "")
+    if not password:
+        return False
+    if len(password) < 16:
+        raise RuntimeError("BOOTSTRAP_DEMO_PASSWORD debe tener al menos 16 caracteres")
+
+    username = os.getenv("BOOTSTRAP_DEMO_USERNAME", "alumno.demo").strip()[:50]
+    email = os.getenv("BOOTSTRAP_DEMO_EMAIL", "alumno.demo@realidactica.local").strip().lower()[:150]
+    password_hash = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    cursor = connection.cursor()
+    cursor.execute(
+        "SELECT id FROM usuarios WHERE usuario = %s OR correo = %s LIMIT 1",
+        (username, email),
+    )
+    existing = cursor.fetchone()
+    if existing:
+        cursor.execute(
+            "UPDATE usuarios SET nombre=%s, apellido=%s, correo=%s, usuario=%s, pass_hash=%s, "
+            "rol='alumno', activo=1, token_confirmacion=NULL, token_creado=NULL WHERE id=%s",
+            ("Alex", "Demo", email, username, password_hash, existing[0]),
+        )
+    else:
+        cursor.execute(
+            "INSERT INTO usuarios (nombre, apellido, correo, usuario, pass_hash, rol, activo) "
+            "VALUES (%s, %s, %s, %s, %s, 'alumno', 1)",
+            ("Alex", "Demo", email, username, password_hash),
+        )
+    cursor.close()
+    return True
+
+
 def main() -> None:
     statements = [
         statement.strip()
@@ -52,14 +85,17 @@ def main() -> None:
         cursor = connection.cursor()
         for statement in statements:
             cursor.execute(statement)
-        connection.commit()
         cursor.close()
+        seeded = seed_demo_student(connection)
+        connection.commit()
     except Exception:
         connection.rollback()
         raise
     finally:
         connection.close()
     print(f"Esquema verificado: {len(statements)} sentencias aplicadas.")
+    if seeded:
+        print("Cuenta de demostración verificada.")
 
 
 if __name__ == "__main__":
